@@ -22,9 +22,9 @@ app.get('/books', async (req, res) => {
     res.status(200).json(books);
 });
 
-app.get('/books/:title', async (req, res) => {
-    const books = await db('books').select('*').where({ title: req.params.title });
-    res.status(200).json(books);
+app.get('/books/:bookId', async (req, res) => {
+    const book = await db('books').select('*').where({ id: req.params.bookId }).first();
+    res.status(200).json(book);
 });
 
 app.post('/books', async (req, res) => {
@@ -34,11 +34,19 @@ app.post('/books', async (req, res) => {
         description: req.body.description,
         year: req.body.year
     });
+
     res.status(201).json({});
 });
 
-app.put('/books:title', (req, res) => {
-    
+app.put('/books/:bookId', async (req, res) => {
+    await db('books').update({
+        title: req.body.title,
+        author: req.body.author,
+        description: req.body.description,
+        year: req.body.year
+    }).where({id: req.params.bookId});
+
+    res.status(204).json({});
 });
 
 app.delete('/books:title', (req, res) => {
