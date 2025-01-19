@@ -49,8 +49,10 @@ app.put('/books/:bookId', async (req, res) => {
     res.status(204).json({});
 });
 
-app.delete('/books:title', (req, res) => {
+app.delete('/books/:bookId', async (req, res) => {
+    await db('books').del().where({ id: req.params.bookId });
 
+    res.status(204).json({});
 });
 
 app.listen(8080, () => {
