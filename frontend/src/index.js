@@ -7,9 +7,10 @@ window.readBooks = function() {
             const bookUl = document.getElementById('books');
 
             bookList.forEach(book => {
-                const li = document.createElement('li');
-                li.appendChild(document.createTextNode(book.title));
-                bookUl.appendChild(li);
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item';
+                listItem.appendChild(document.createTextNode(book.title));
+                bookUl.appendChild(listItem);
             });
         });
 }
