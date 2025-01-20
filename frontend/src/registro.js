@@ -15,6 +15,6 @@ window.addBook = function() {
         title: title,
         author: author,
         description: description,
-        year: year
+        year: year,
     });
 };
