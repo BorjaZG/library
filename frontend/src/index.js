@@ -3,21 +3,20 @@ import { notifyOk, notifyError } from './dialogUtil';
 
 window.readBooks = async function () {
     try {
-        const container = document.getElementById('cards-container');
-        if (!container) {
-            console.error('No se encontró el contenedor con id="cards-container".');
-            return;
-        }
         const response = await axios.get('http://localhost:8080/books');
         const books = response.data;
+
+        const container = document.getElementById('cards-container');
         container.innerHTML = ''; // Limpia el contenedor
+
         if (books.length === 0) {
             container.innerHTML = '<p class="text-muted">No hay libros registrados.</p>';
             return;
         }
+
+        // Generar las tarjetas para cada libro
         container.innerHTML = books.map(book => `
             <div class="card shadow-sm m-2" style="width: 18rem;" id="card-${book.id}">
-                <img src="${book.image || 'https://via.placeholder.com/150'}" class="card-img-top" alt="${book.title}">
                 <div class="card-body">
                     <h5 class="card-title">${book.title}</h5>
                     <p class="card-text"><strong>Autor:</strong> ${book.author}</p>
@@ -44,10 +43,10 @@ window.deleteBook = async function (bookId) {
         if (!confirmDelete) {
             return; // Cancelar la acción si el usuario presiona "Cancelar"
         }
-        // Realiza la solicitud DELETE al backend
+
         const response = await axios.delete(`http://localhost:8080/books/${bookId}`);
+
         if (response.status === 204) {
-            // Eliminar la tarjeta del DOM
             const card = document.getElementById(`card-${bookId}`);
             if (card) {
                 card.remove();
