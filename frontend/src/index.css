@@ -1,0 +1,55 @@
+
+.card {
+    max-width: 18rem;
+    margin: 1rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    transition: transform 0.3s;
+}
+
+/* Efecto hover para las tarjetas */
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Ajustes para la imagen dentro de la tarjeta */
+.card img {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    max-height: 150px;
+    object-fit: cover;
+}
+
+.card-img-top {
+    object-fit: cover;
+    height: 200px;
+}
+
+/* Centrar el texto del cuerpo de las tarjetas */
+.card .card-body {
+    text-align: center;
+}
+
+/* Personalización de los botones */
+.card .btn {
+    margin-top: 10px;
+    background-color: #007bff;
+    border: none;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.card .btn:hover {
+    background-color: #0056b3;
+}
+
+.card .btn-danger {
+    background-color: #dc3545;
+    border: none;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.card .btn-danger:hover {
+    background-color: #a71d2a;
+}
