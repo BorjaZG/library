@@ -1,11 +1,7 @@
 {
     "name": "books-frontend",
     "version": "0.1",
-    "source": [
-        "src/index.html",
-        "src/editar.html",
-        "src/registro.html"
-    ],
+    "source": "src/index.html",
     "type": "module",
     "scripts": {
         "start": "parcel --no-cache",

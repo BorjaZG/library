@@ -22,7 +22,7 @@ window.readBooks = async function () {
                     <p class="card-text"><strong>Autor:</strong> ${book.author}</p>
                     <p class="card-text"><strong>Año:</strong> ${book.year}</p>
                     <p class="card-text">${book.description}</p>
-                    <a href="editar.html?id=${book.id}" class="btn btn-primary">Editar</a>
+                    <a href="./editar.html?id=${book.id}" class="btn btn-primary">Editar</a>
                     <button class="btn btn-danger" onclick="deleteBook(${book.id})">Eliminar</button>
                 </div>
             </div>
