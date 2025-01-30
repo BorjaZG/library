@@ -2,100 +2,130 @@ const express = require('express');
 const cors = require('cors');
 const knex = require('knex');
 
-// Configuración de la base de datos
 const db = knex({
     client: 'sqlite3',
-    connection: {
-        filename: './books.db',
-    },
+    connection: { filename: './books.db' },
     useNullAsDefault: true,
 });
 
 const app = express();
 const PORT = 8080;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Rutas
+// 📌 CRUD de libros
 app.get('/books', async (req, res) => {
     try {
         const books = await db('books').select('*');
         res.json(books);
     } catch (error) {
-        console.error('Error al obtener los libros:', error);
         res.status(500).json({ error: 'Error al obtener los libros.' });
     }
 });
 
 app.post('/books', async (req, res) => {
     try {
-        const { title, author, description, year } = req.body;
+        const { title, author_id } = req.body;
 
-        if (!title || !author || !description || !year) {
+        if (!title || !author_id) {
             return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
         }
 
-        const newBook = { title, author, description, year };
-        await db('books').insert(newBook);
+        const newBook = {
+            title: title.trim(),
+            author_id: Number(author_id) // Asegurar que sea un número
+        };
 
-        res.status(201).json({ message: 'Libro agregado correctamente.', book: newBook });
+        const [id] = await db('books').insert(newBook);
+        res.status(201).json({ message: 'Libro agregado correctamente.', book_id: id });
     } catch (error) {
         console.error('Error al agregar el libro:', error);
-        res.status(500).json({ error: 'Error al agregar el libro.' });
+        res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
 
 app.put('/books/:id', async (req, res) => {
     try {
+        const { title, author_id } = req.body;
         const { id } = req.params;
-        const { title, author, description, year } = req.body;
 
-        const updatedBook = {};
-        if (title) updatedBook.title = title;
-        if (author) updatedBook.author = author;
-        if (description) updatedBook.description = description;
-        if (year) updatedBook.year = year;
-
-        if (Object.keys(updatedBook).length === 0) {
-            return res.status(400).json({ error: 'No se proporcionaron campos para actualizar.' });
+        if (!title || !author_id) {
+            return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
         }
 
-        const updatedRows = await db('books').where({ id }).update(updatedBook);
+        // Convertir author_id a número
+        const updatedBook = {
+            title: title.trim(),
+            author_id: Number(author_id)
+        };
 
-        if (updatedRows === 0) {
+        // Verificar si el libro existe
+        const bookExists = await db('books').where({ id }).first();
+        if (!bookExists) {
             return res.status(404).json({ error: 'Libro no encontrado.' });
         }
 
-        res.status(200).json({ message: 'Libro actualizado correctamente.', book: updatedBook });
+        // Actualizar libro
+        await db('books').where({ id }).update(updatedBook);
+        res.json({ message: 'Libro actualizado correctamente.' });
     } catch (error) {
         console.error('Error al actualizar el libro:', error);
-        res.status(500).json({ error: 'Error al actualizar el libro.' });
+        res.status(500).json({ error: 'Error interno del servidor.' });
     }
 });
 
 app.delete('/books/:id', async (req, res) => {
     try {
-        const { id } = req.params;
-
-        // Verifica si el libro existe
-        const book = await db('books').where({ id }).first();
-        if (!book) {
-            return res.status(404).json({ error: 'Libro no encontrado.' });
-        }
-
-        // Elimina el libro de la base de datos
-        await db('books').where({ id }).del();
-
-        res.status(204).send(); // Respuesta exitosa sin contenido
+        await db('books').where({ id: req.params.id }).del();
+        res.status(204).send();
     } catch (error) {
-        console.error('Error al eliminar el libro:', error);
         res.status(500).json({ error: 'Error al eliminar el libro.' });
     }
 });
 
-// Iniciar servidor
+// 📌 CRUD de autores
+app.get('/authors', async (req, res) => {
+    try {
+        const authors = await db('authors').select('*');
+        res.json(authors);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener los autores.' });
+    }
+});
+
+app.post('/authors', async (req, res) => {
+    try {
+        const { name } = req.body;
+        if (!name) {
+            return res.status(400).json({ error: 'El nombre del autor es obligatorio.' });
+        }
+        await db('authors').insert({ name });
+        res.status(201).json({ message: 'Autor agregado correctamente.' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al agregar el autor.' });
+    }
+});
+
+app.put('/authors/:id', async (req, res) => {
+    try {
+        const { name } = req.body;
+        await db('authors').where({ id: req.params.id }).update({ name });
+        res.json({ message: 'Autor actualizado correctamente.' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error al actualizar el autor.' });
+    }
+});
+
+app.delete('/authors/:id', async (req, res) => {
+    try {
+        await db('authors').where({ id: req.params.id }).del();
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ error: 'Error al eliminar el autor.' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
