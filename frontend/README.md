@@ -1,94 +1,133 @@
-# Library Management System
+
+# 📚 Library Management API
 
 ## Descripción
-Este proyecto es un sistema de gestión de libros que permite realizar operaciones básicas de un CRUD (Crear, Leer, Actualizar, Eliminar) tanto en el backend como en el frontend. La aplicación incluye una API REST para gestionar los datos de los libros almacenados en una base de datos SQLite y una interfaz web desarrollada con HTML, CSS y JavaScript.
+Este proyecto es una API RESTful de gestión de libros y autores. Permite realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre libros y autores almacenados en una base de datos MariaDB.
+
+Incluye además un conjunto completo de tests unitarios y de integración para garantizar su correcto funcionamiento.
 
 ## Características
-- CRUD completo para gestionar libros.
-- Backend desarrollado con Node.js y Express.
-- Base de datos SQLite.
-- Frontend responsivo utilizando Bootstrap.
-- Validaciones básicas en el frontend y backend.
-- Notificaciones de éxito y error mediante Toastify.js.
+- CRUD completo de **libros** (`/api/books`) y **autores** (`/api/authors`).
+- Backend desarrollado con **Node.js** y **Express**.
+- Base de datos **MariaDB** conectada mediante **mysql2**.
+- Tests unitarios y de integración usando **Mocha**, **Chai** y **Chai-HTTP**.
+- Variables de entorno configurables mediante **dotenv**.
 
 ## Tecnologías utilizadas
-### Backend
-- Node.js
-- Express
-- SQLite
-- Knex.js (ORM para gestionar la base de datos)
-
-### Frontend
-- HTML5
-- CSS3 (Bootstrap)
-- JavaScript (ES6+)
-- Toastify.js (para notificaciones)
+- **Node.js** (runtime)
+- **Express** (framework backend)
+- **MariaDB** (base de datos relacional)
+- **mysql2** (driver para Node.js)
+- **Mocha** (framework de testing)
+- **Chai** (librería de aserciones)
+- **Chai-HTTP** (extensión para testear APIs REST)
 
 ## Requisitos previos
-Antes de ejecutar el proyecto, asegúrate de tener instalado:
+Antes de ejecutar el proyecto debes tener instalado:
 - [Node.js](https://nodejs.org/)
-- [Git](https://git-scm.com/)
+- [MariaDB](https://mariadb.org/)
 
-## Instrucciones para ejecutar el proyecto
-### Clonar el repositorio
-```bash
-git clone https://github.com/BorjaZG/library.git
-cd library
-```
+Además, asegúrate de tener un servidor MariaDB corriendo en tu máquina (por defecto en el puerto 3306 o el que configures).
 
-### Configuración del backend
-1. Instala las dependencias del backend:
+## Instalación
+
+1. Clona el repositorio:
+   ```bash
+   git clone <url-del-repo>
+   cd backend
+   ```
+
+2. Instala las dependencias:
    ```bash
    npm install
    ```
-2. Inicia la base de datos SQLite (si no existe, se creará automáticamente al iniciar el servidor).
-3. Ejecuta el servidor backend:
-   ```bash
-   node app.js
-   ```
-   El servidor estará disponible en `http://localhost:8080`.
 
-### Configuración del frontend
-1. Abre el archivo `index.html` en un navegador web o utiliza una extensión como [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer) en VS Code para una experiencia más fluida.
+3. Configura las variables de entorno:
+
+   Crea un archivo `.env` en la raíz del proyecto y añade:
+
+   ```
+   DB_HOST=localhost
+   DB_PORT=3306
+   DB_USER=tu_usuario
+   DB_PASSWORD=tu_contraseña
+   DB_DATABASE=books
+   PORT=3000
+   ```
+
+4. Crea la base de datos y las tablas en MariaDB:
+
+   ```sql
+   CREATE DATABASE books;
+
+   USE books;
+
+   CREATE TABLE authors (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     name VARCHAR(255) NOT NULL
+   );
+
+   CREATE TABLE books (
+     id INT AUTO_INCREMENT PRIMARY KEY,
+     title VARCHAR(255) NOT NULL,
+     author VARCHAR(255) NOT NULL
+   );
+   ```
+
+5. Inicia el servidor:
+   ```bash
+   npm run dev
+   ```
+
+   El servidor estará disponible en `http://localhost:3000`.
+
+## Scripts disponibles
+
+- `npm start`: Ejecuta el servidor normalmente.
+- `npm run dev`: Ejecuta el servidor en modo desarrollo con Nodemon.
+- `npm test`: Lanza todos los tests unitarios e integración.
 
 ## Rutas de la API
-### Libros
-- **GET /books**: Devuelve la lista de libros.
-- **POST /books**: Crea un nuevo libro.
-  - Parámetros:
-    ```json
-    {
-      "title": "string",
-      "author": "string",
-      "description": "string",
-      "year": "number"
-    }
-    ```
-- **PUT /books/:id**: Actualiza un libro existente.
-  - Parámetros (en el cuerpo):
-    ```json
-    {
-      "title": "string",
-      "author": "string",
-      "description": "string",
-      "year": "number"
-    }
-    ```
-- **DELETE /books/:id**: Elimina un libro por su ID.
+
+### 📚 Books
+- **GET** `/api/books` - Listar todos los libros.
+- **POST** `/api/books` - Crear un libro.
+- **GET** `/api/books/:id` - Obtener un libro específico.
+- **PUT** `/api/books/:id` - Actualizar un libro.
+- **DELETE** `/api/books/:id` - Eliminar un libro.
+
+### ✍️ Authors
+- **GET** `/api/authors` - Listar todos los autores.
+- **POST** `/api/authors` - Crear un autor.
+- **GET** `/api/authors/:id` - Obtener un autor específico.
+- **PUT** `/api/authors/:id` - Actualizar un autor.
+- **DELETE** `/api/authors/:id` - Eliminar un autor.
 
 ## Estructura del proyecto
 ```
-.
-├── app.js            # Backend principal (servidor Express)
-├── books.db          # Base de datos SQLite
-├── dialogUtil.js     # Utilidades para notificaciones (Toastify.js)
-├── editar.html       # Página para editar libros
-├── editar.js         # Lógica de la edición de libros
-├── index.html        # Página principal para listar libros
-├── index.js          # Lógica para listar y eliminar libros
-├── index.css         # Estilos de la página principal
-├── registro.html     # Página para registrar nuevos libros
-├── registro.js       # Lógica para registrar libros
-├── registro.css      # Estilos para el formulario de registro
-└── README.md         # Documentación del proyecto
+backend/
+├── src/
+│   ├── config/
+│   │   └── database.js
+│   ├── controllers/
+│   │   ├── authorController.js
+│   │   └── bookController.js
+│   ├── routes/
+│   │   ├── authorRoutes.js
+│   │   └── bookRoutes.js
+│   ├── services/
+│   │   ├── authorService.js
+│   │   └── bookService.js
+│   ├── tests/
+│   │   ├── unit/
+│   │   │   ├── authorController.test.js
+│   │   │   └── bookController.test.js
+│   │   └── integration/
+│   │       ├── authorRoutes.test.js
+│   │       └── bookRoutes.test.js
+│   ├── app.js
+│   └── server.js
+├── package.json
+├── .env
+└── README.md
 ```
