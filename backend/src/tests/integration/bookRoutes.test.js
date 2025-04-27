@@ -15,7 +15,7 @@ describe('Book Routes', () => {
     await pool.query('DELETE FROM books');
     await pool.query('DELETE FROM authors');
 
-    // 🔥 Creamos un autor antes de los tests de libros
+    // Creamos un autor antes de los tests de libros
     const [result] = await pool.query('INSERT INTO authors (name) VALUES (?)', ['Autor Prueba']);
     createdAuthorId = result.insertId;
   });

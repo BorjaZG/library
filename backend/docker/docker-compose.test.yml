@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  mariadb-test:
+    image: mariadb:latest
+    container_name: mariadb-test
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: books
+    ports:
+      - "3308:3306"
+    volumes:
+      - ../db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - books-test-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+
+  backend-test:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: backend-test
+    depends_on:
+      mariadb-test:
+        condition: service_healthy
+    environment:
+      DB_HOST: mariadb-test
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_DATABASE: books
+      PORT: 8081
+    command: npm run test:integration
+    networks:
+      - books-test-network
+
+networks:
+  books-test-network:
+    driver: bridge
+
+
+# Para ejecutarlo:
+# docker-compose -f docker-compose.test.yml up --build

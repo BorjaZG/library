@@ -4,7 +4,7 @@ const authorController = require('../../controllers/authorController');
 const authorService = require('../../services/authorService');
 
 describe('Author Controller', () => {
-  
+
   afterEach(() => {
     sinon.restore(); // Restaurar mocks después de cada test
   });

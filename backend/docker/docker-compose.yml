@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: books
+    ports:
+      - "3307:3306"
+    volumes:
+      - ../db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - books-network
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+    environment:
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_DATABASE: books
+      PORT: 8080
+    networks:
+      - books-network
+
+networks:
+  books-network:
+    driver: bridge
