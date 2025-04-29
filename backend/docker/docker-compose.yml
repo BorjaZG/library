@@ -24,16 +24,28 @@ services:
       - "8080:8080"
     depends_on:
       - mariadb
-    environment:
-      DB_HOST: mariadb
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: root
-      DB_DATABASE: books
-      PORT: 8080
+    env_file:
+      - ../.env.docker
+    networks:
+      - books-network
+
+  frontend:
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:80"   # Exponemos Nginx en el puerto 3000 de tu máquina
+    depends_on:
+      - backend
     networks:
       - books-network
 
 networks:
   books-network:
     driver: bridge
+
+# Para ejecutarlo:
+# cd backend
+# docker-compose -f backend/docker/docker-compose.yml up --build
+
