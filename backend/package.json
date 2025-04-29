@@ -18,9 +18,8 @@
     },
     "scripts": {
         "start": "node src/server.js",
-        "dev": "nodemon src/server.js",
         "test": "npx mocha src/tests/unit && npx mocha src/tests/integration --exit",
-        "test:unit": "mocha src/tests/unit",
-        "test:integration": "mocha src/tests/integration --exit"
+        "test:unit": "npx mocha src/tests/unit",
+        "test:integration": "npx mocha src/tests/integration --exit"
     }
 }
