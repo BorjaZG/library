@@ -43,3 +43,5 @@ jobs:
     - name: Build imagen Docker frontend
       working-directory: ./frontend
       run: docker build -t frontend-app .
+
+# a ver si funciona el docker build
