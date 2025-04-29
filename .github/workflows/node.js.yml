@@ -14,25 +14,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        working-directory: backend
-        run: |
-          npm install
-          chmod -R 755 node_modules # Asegura permisos correctos
-
-      - name: Run tests
-        working-directory: backend
-        run: |
-          ./node_modules/.bin/mocha src/tests/unit
-          ./node_modules/.bin/mocha src/tests/integration --exit
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Run tests with Docker Compose
+        run: |
+          docker-compose -f backend/docker/docker-compose.test.yml up --build --abort-on-container-exit
 
       - name: Build backend Docker image
         working-directory: backend
@@ -42,4 +29,4 @@ jobs:
       - name: Build frontend Docker image
         working-directory: frontend
         run: |
-          docker build -t frontend-image -f docker/Dockerfile .
+          docker build -t frontend-image -f Dockerfile .
