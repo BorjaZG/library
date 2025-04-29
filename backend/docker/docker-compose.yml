@@ -35,7 +35,7 @@ services:
       dockerfile: Dockerfile
     container_name: frontend
     ports:
-      - "3000:80"   # Exponemos Nginx en el puerto 3000 de tu máquina
+      - "3000:80"   # Exponemos Nginx en el puerto 3000
     depends_on:
       - backend
     networks:
