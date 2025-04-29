@@ -18,7 +18,7 @@
     "scripts": {
         "start": "node src/server.js",
         "dev": "nodemon src/server.js",
-        "test": "mocha src/tests/unit && mocha src/tests/integration --exit",
+        "test": "npx mocha src/tests/unit && npx mocha src/tests/integration --exit",
         "test:unit": "mocha src/tests/unit",
         "test:integration": "mocha src/tests/integration --exit"
     }
