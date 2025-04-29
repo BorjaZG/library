@@ -19,11 +19,17 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install dependencies and run tests
+      - name: Install dependencies
         working-directory: backend
         run: |
           npm install
-          npm test
+          chmod -R 755 node_modules # Asegura permisos correctos
+
+      - name: Run tests
+        working-directory: backend
+        run: |
+          ./node_modules/.bin/mocha src/tests/unit
+          ./node_modules/.bin/mocha src/tests/integration --exit
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
