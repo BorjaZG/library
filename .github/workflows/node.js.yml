@@ -27,7 +27,8 @@ jobs:
       working-directory: ./backend
       run: |
         npm install
-        npm test
+        chmod +x ./node_modules/.bin/mocha
+        npx mocha src/tests/unit && npx mocha src/tests/integration --exit
 
     - name: Instalar dependencias y lanzar build frontend
       working-directory: ./frontend
