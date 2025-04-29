@@ -16,9 +16,11 @@ services:
       - books-test-network
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 3s
-      retries: 10
+      interval: 10s
+      timeout: 5s
+      retries: 15
+
+
 
 
   backend-test:
@@ -29,13 +31,8 @@ services:
     depends_on:
       mariadb-test:
         condition: service_healthy
-    environment:
-      DB_HOST: mariadb-test
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: root
-      DB_DATABASE: books
-      PORT: 8081
+    env_file:
+      - ../.env.docker
     command: npm run test:integration
     networks:
       - books-test-network
@@ -46,4 +43,4 @@ networks:
 
 
 # Para ejecutarlo:
-# docker-compose -f docker-compose.test.yml up --build
+# docker-compose -f docker/docker-compose.test.yml up --build

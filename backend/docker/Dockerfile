@@ -18,3 +18,6 @@ EXPOSE 8080
 
 # Comando que se ejecuta al iniciar el contenedor
 CMD ["npm", "start"]
+
+
+#docker build -f backend/docker/Dockerfile ..
