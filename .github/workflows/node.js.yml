@@ -1,7 +1,4 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Library CI
+name: Test and Build Backend and Frontend
 
 on:
   push:
@@ -10,38 +7,34 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
-
+  test-and-build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repositorio
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Instalar Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
 
-    - name: Instalar dependencias y lanzar tests backend
-      working-directory: ./backend
-      run: |
-        npm install
-        chmod +x ./node_modules/.bin/mocha
-        npx mocha src/tests/unit && npx mocha src/tests/integration --exit
+      - name: Install dependencies and run tests
+        working-directory: backend
+        run: |
+          npm install
+          npm test
 
-    - name: Instalar dependencias y lanzar build frontend
-      working-directory: ./frontend
-      run: |
-        npm install
-        npm run build
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-    - name: Build imagen Docker backend
-      working-directory: ./backend
-      run: docker build -t backend-app .
+      - name: Build backend Docker image
+        working-directory: backend
+        run: |
+          docker build -t backend-image -f docker/Dockerfile .
 
-    - name: Build imagen Docker frontend
-      working-directory: ./frontend
-      run: docker build -t frontend-app .
-
-# a ver si funciona el docker build
+      - name: Build frontend Docker image
+        working-directory: frontend
+        run: |
+          docker build -t frontend-image -f docker/Dockerfile .
