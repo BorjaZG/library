@@ -29,7 +29,7 @@ jobs:
           chmod -R 755 node_modules
           npm run test:unit
 
-      # Si quieres lanzar los de integración con base de datos simulada, descomenta:
+      # Lanzar los de integración con base de datos simulada, descomentar:
       # - name: Run backend integration tests
       #   working-directory: backend
       #   run: npm run test:integration

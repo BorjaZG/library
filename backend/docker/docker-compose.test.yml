@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   mariadb-test:
-    image: mariadb:latest
+    image: mariadb:10.7
     container_name: mariadb-test
     restart: always
     environment:
@@ -32,7 +32,7 @@ services:
       mariadb-test:
         condition: service_healthy
     env_file:
-      - ../.env.docker
+      - ../.env
     command: npm run test:integration
     networks:
       - books-test-network
