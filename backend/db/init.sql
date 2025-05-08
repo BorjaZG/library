@@ -1,3 +1,7 @@
+-- Permitir conexiones desde cualquier host para root
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root';
+FLUSH PRIVILEGES;
+
 -- Crear base de datos si no existe
 CREATE DATABASE IF NOT EXISTS books;
 USE books;
